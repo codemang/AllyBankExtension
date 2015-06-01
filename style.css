@@ -1,0 +1,6 @@
+p.totalSpent {
+  display: inline-block;
+  color: rgb(218, 3, 3);
+  margin-left: 50px;
+  font-weight: 400;
+}
