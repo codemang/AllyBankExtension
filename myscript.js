@@ -1,7 +1,8 @@
 var changing=false;
+var calculatedClass = "hey";
+var pendingClass = "hey2";
 
 function totalSpentFunction(elm) {
-  console.log($(elm).find("tbody tr td.hide-for-print").length);
   if ($(elm).find("tbody tr td.hide-for-print").length != 0)
     return -1;
 
@@ -14,29 +15,23 @@ function totalSpentFunction(elm) {
 
 function displayTotalSpent(totalSpent, elm) {
   if (totalSpent == -1) {
+    if ($(elm).hasClass(pendingClass)) return false;
+
     var html = "<p class='totalSpent'>Click For Full Details</p>";
     $(elm).find("tr.transaction-collapsible-header th:eq(0)").append(html);
-    $(elm).addClass(className);
-    return;
+    $(elm).addClass(pendingClass);
+    return false;
   }
 
+  $(elm).find(".totalSpent").remove();
   var html = "<p class='totalSpent'>Total Spent: $"+ totalSpent+"</p>";
   $(elm).find("tr.transaction-collapsible-header th:eq(0)").append(html);
-  $(elm).addClass(className);
+  $(elm).addClass(calculatedClass);
+  $(elm).removeClass(pendingClass);
 }
 
-var about = false;
-var numChanged = 0;
-var className = "hey";
 
 function injectHtml() {
-  //if (numChanged > 20) return;
-  /*console.log(numChanged+"   "+$("table.blank").length);
-  if (numChanged == $("table.blank").length) return;
-  numChanged = 0;*/
-
-  if (numChanged == $("table.blank").length) return;
-
   if ($("tr.transaction-collapsible-header").length == 0) {
     setTimeout(function() { injectHtml(); }, 2000);
     return;
@@ -45,22 +40,30 @@ function injectHtml() {
   if (changing) return;
   changing = true;
 
-  $("table.blank.transactions-history-table").not("."+className).each(function() {
-    numChanged = numChanged + 1;
+  $("table.blank.transactions-history-table").not("."+calculatedClass).each(function() {
     var totalSpent = totalSpentFunction($(this));
     displayTotalSpent(totalSpent, $(this));
   });
+
   changing = false;
 }
 
 var bodyObserver = null;
+var tableObserver = null;
+
 
 function analyzeDetailsPage() {
-  if (bodyObserver) bodyObserver.disconnect();
   var target = document.querySelector('body');
    
   bodyObserver  = new MutationObserver(function(mutations) {
-    injectHtml();
+    var shouldInject = true;
+    mutations.forEach(function(mutation) {
+      if ($(mutation.target).hasClass(pendingClass))
+        shouldInject = false;
+    });
+
+    if (shouldInject)
+      injectHtml();
   });
     
   var config = { attributes: true, childList: true, characterData: true, subtree:true };
