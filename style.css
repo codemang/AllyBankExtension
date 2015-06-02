@@ -1,6 +1,19 @@
-p.totalSpent {
+p.totalSpent, p.clickForDetails {
   display: inline-block;
-  color: rgb(218, 3, 3);
   margin-left: 50px;
   font-weight: 400;
+  float: right;
+}
+
+p.totalSpent {
+  color: rgb(218, 3, 3);
+}
+
+p.clickForDetails {
+  color: rgb(21, 111, 111)
+}
+
+p.extensionDate {
+  display: inline-block;
+  float: left;
 }

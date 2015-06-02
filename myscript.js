@@ -13,21 +13,27 @@ function totalSpentFunction(elm) {
   return sum.toFixed(2);
 }
 
-function displayTotalSpent(totalSpent, elm) {
-  if (totalSpent == -1) {
-    if ($(elm).hasClass(pendingClass)) return false;
+function wrap(elm) {
+  if ($(elm).find(".extensionDate").length != 0) return;
+  $(elm).wrapInner("<p class='extensionDate'></p>");
+}
 
-    var html = "<p class='totalSpent'>Click For Full Details</p>";
+function displayTotalSpent(totalSpent, elm) {
+  if (totalSpent == -1 && !$(elm).hasClass(pendingClass)) {
+    wrap($(elm).find("tr.transaction-collapsible-header th:eq(0)"));
+    var html = "<p class='clickForDetails'>Click For Full Details</p>";
     $(elm).find("tr.transaction-collapsible-header th:eq(0)").append(html);
     $(elm).addClass(pendingClass);
     return false;
   }
-
-  $(elm).find(".totalSpent").remove();
-  var html = "<p class='totalSpent'>Total Spent: $"+ totalSpent+"</p>";
-  $(elm).find("tr.transaction-collapsible-header th:eq(0)").append(html);
-  $(elm).addClass(calculatedClass);
-  $(elm).removeClass(pendingClass);
+  else if (totalSpent != -1) {
+    wrap($(elm).find("tr.transaction-collapsible-header th:eq(0)"));
+    $(elm).find(".clickForDetails").remove();
+    var html = "<p class='totalSpent'>Total Spent: $"+ totalSpent+"</p>";
+    $(elm).find("tr.transaction-collapsible-header th:eq(0)").append(html);
+    $(elm).addClass(calculatedClass);
+    $(elm).removeClass(pendingClass);
+  }
 }
 
 
