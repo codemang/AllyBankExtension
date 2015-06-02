@@ -17,3 +17,15 @@ p.extensionDate {
   display: inline-block;
   float: left;
 }
+
+.sub-header, .header-content {
+  display: none !important;
+}
+
+.header, .rightHeaderNav .button-border, .headerNav {
+  height: 60px !important;
+}
+
+div.wrapper {
+  padding-top: 70px !important;
+}
